@@ -10,6 +10,8 @@ kind: Job
 metadata:
   name: myjob
 spec:
+  completions: -
+  parallelism: -
   template:
     metadata:
       name: <name>
@@ -63,18 +65,18 @@ Or  <kubectl edit deployment dep> and do
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: special
+  name: ds
 spec:
   template:
     metadata:
-      name: special
+      name: ds
       labels:
-        name: special
+        name: ds
     spec:
       hostNetwork: true
       hostPID: true
       containers:
-        - name: special
+        - name: ds
           image: nginx
           securityContext:
             privileged: true
@@ -123,7 +125,7 @@ spec:
     - "3600"
     imagePullPolicy: IfNotPresent
   nodeSelector:
-    disk: ssk
+    node: selector
 
 
 - Update and rollabck
@@ -133,7 +135,6 @@ kubectl rollout undo deployment/nginx-app --to-revision=1
 
 - Scale an RC
 kubectl scale rc aaa --replicas=10
-
 
 - Stream spec 
 kubectl get deployment depy -o jsonpath='{$.spec}' > spec.txt
@@ -157,11 +158,11 @@ env:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: question16
+  name: podwithvol
   namespace: default
 spec:
   containers:
-  - name: question16
+  - name: podwithvol
     image: busybox
     command:
     - sleep
@@ -178,10 +179,10 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress-demo
+  name: ingress
 spec:
   rules:
-  - host: ingress.demo.com
+  - host: ingress.dns.name.com
     http:
       paths:
       - backend:
@@ -193,11 +194,17 @@ kubectl top pods --namespace=kube-system
 
 
 - DNS between services
-Expose nginx service first
-kubectl exec <> -- nslookup nginx-service > nsconfig.txt
+kubectl run dpname --image= --port=80 
+kubectl expose deployment dpname --port=80 --name=dpnamename --target-port=80
+
+kubectl run busy --image=busybox -- sleep 3600
+
+kubectl get pod  
+kubectl exec -it <> 6 -- nslookup nginx-random
+
 
 - Drain node
-kubectl drain node <>
+kubectl drain node <> --force
  
 - Install K8s from tar.gz
 TOO LONG
